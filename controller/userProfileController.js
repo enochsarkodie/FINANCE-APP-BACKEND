@@ -10,6 +10,29 @@ const getUserProfile = async(req,res) =>{
         res.status(400).json({message:"User profile not found"});
     }
 }
+
+const createProfile = async (req, res) => {
+    const { income, limit, savings, categories,username } = req.body;
+
+    try {
+        const newProfile = await Profile.create({
+            income,
+            username,
+            limit,
+            savings,
+            categories,
+            user: req.user.id,
+        });
+
+        res.status(201).json(newProfile);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ message: "Failed to create profile", error: error.message });
+    }
+};
+
+
+
 const updateUserProfile = async (req, res) => {
     try {
         const profile = await Profile.findById(req.params.id);
@@ -41,4 +64,4 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = {getUserProfile, updateUserProfile};
+module.exports = {getUserProfile, updateUserProfile,createProfile};
