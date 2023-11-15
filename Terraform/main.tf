@@ -65,9 +65,33 @@ resource "google_compute_firewall" "fw_egress" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-# Creates the VM instance within the alpha-finance-app VPC network
+# Creates the VM instance "finance-web-server" within the alpha-finance-app VPC network
 resource "google_compute_instance" "vm_instance" {
   name = "finance-app-server"
+  machine_type = "n1-standard-4"
+  zone = "us-central1-a"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  metadata_startup_script = "sudo apt-get update;" # Updates the OS after launching VM
+
+  network_interface {
+    network = google_compute_network.vpc_network.id
+
+    access_config {
+      # Included for an external IP address for the VM instance
+    }
+  }
+  
+}
+
+# Creates the VM instance "finance-app-server-2" within the alpha-finance-app VPC network
+resource "google_compute_instance" "vm_instance-2" {
+  name = "finance-app-server-2"
   machine_type = "n1-standard-4"
   zone = "us-central1-a"
 
